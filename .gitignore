@@ -1,0 +1,23 @@
+﻿# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Secrets / env
+.env
+*.env
+twilio_credentials.json
+
+# Runtime data
+logs/*.log
+uploads/*
+!uploads/.gitkeep
+!logs/.gitkeep
+
+# OS/editor junk
+.DS_Store
+.vscode/
+.idea/
