@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CallGuard AI — Spam Call Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">CallGuard<span class="brand-ai">AI</span></span>
+    </div>
+    <div class="topbar-status">
+      <span class="dot dot-live"></span> Screening engine active
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- LEFT: INCOMING CALL SIMULATOR -->
+    <section class="panel call-panel">
+      <h2 class="panel-eyebrow">01 — Simulate an incoming call</h2>
+
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" id="phoneScreen">
+
+          <div class="call-idle" id="callIdle">
+            <div class="ring-visual" id="ringVisual">
+              <div class="ring-core">
+                <span id="ringLabel">Ready</span>
+              </div>
+            </div>
+            <p class="idle-copy">Enter caller details below, then tap <strong>Answer with AI</strong> to see CallGuard screen the call in real time.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="upload-dropzone" id="uploadDropzone">
+        <input type="file" id="audioFileInput" accept=".wav,.mp3,.m4a,.ogg,.flac,.aiff,.aif" hidden>
+        <span class="upload-icon">⬆</span>
+        <p><strong>Drop a call recording</strong> or click to browse</p>
+        <p class="upload-hint">WAV, MP3, M4A, OGG, FLAC — auto-transcribed &amp; auto-analyzed, no typing needed</p>
+      </div>
+      <p class="upload-status" id="uploadStatus"></p>
+
+      <div class="divider-or"><span>or simulate manually</span></div>
+
+      <form id="callForm" class="call-form">
+        <label class="field">
+          <span>Caller number</span>
+          <input type="text" id="phoneNumber" placeholder="+919999000011" required>
+        </label>
+
+        <label class="field">
+          <span>Live transcript (what the caller says)</span>
+          <textarea id="transcript" rows="3" placeholder="e.g. Congratulations! You have won a lottery prize, share your otp to claim" required></textarea>
+        </label>
+
+        <div class="field-row">
+          <label class="field small">
+            <span>Calls from this number today</span>
+            <input type="number" id="callsPerDay" value="1" min="1">
+          </label>
+          <label class="field small">
+            <span>Avg. call duration (sec)</span>
+            <input type="number" id="avgDuration" value="60" min="1">
+          </label>
+          <label class="field checkbox-field">
+            <input type="checkbox" id="isInternational">
+            <span>Unknown / foreign code</span>
+          </label>
+        </div>
+
+        <div class="quick-fill">
+          <span>Try a sample:</span>
+          <button type="button" class="chip chip-spam" data-sample="lottery">Lottery scam</button>
+          <button type="button" class="chip chip-spam" data-sample="otp">OTP fraud</button>
+          <button type="button" class="chip chip-spam" data-sample="loan">Loan scam</button>
+          <button type="button" class="chip chip-ham" data-sample="ham">Genuine call</button>
+        </div>
+
+        <button type="submit" class="btn-answer" id="answerBtn">Answer with AI</button>
+      </form>
+    </section>
+
+    <!-- MIDDLE: AI ANALYSIS -->
+    <section class="panel analysis-panel">
+      <h2 class="panel-eyebrow">02 — AI detection analysis</h2>
+
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 200 120" class="gauge-svg" id="gaugeSvg">
+          <path d="M 20 100 A 80 80 0 0 1 180 100" class="gauge-track"/>
+          <path d="M 20 100 A 80 80 0 0 1 180 100" class="gauge-fill" id="gaugeFill"/>
+        </svg>
+        <div class="gauge-readout">
+          <span class="gauge-score" id="gaugeScore">--</span>
+          <span class="gauge-unit">spam score</span>
+        </div>
+      </div>
+
+      <div class="score-breakdown" id="scoreBreakdown">
+        <div class="score-row">
+          <span>ML model score</span>
+          <div class="bar"><div class="bar-fill bar-ml" id="mlBar"></div></div>
+          <span class="score-val" id="mlVal">--</span>
+        </div>
+        <div class="score-row">
+          <span>Rule-engine score</span>
+          <div class="bar"><div class="bar-fill bar-rule" id="ruleBar"></div></div>
+          <span class="score-val" id="ruleVal">--</span>
+        </div>
+      </div>
+
+      <div class="verdict-card" id="verdictCard">
+        <span class="verdict-label" id="verdictLabel">Awaiting call…</span>
+        <p class="verdict-reasons" id="verdictReasons"></p>
+      </div>
+    </section>
+
+    <!-- RIGHT: IVR CONVERSATION + LOG -->
+    <section class="panel ivr-panel">
+      <h2 class="panel-eyebrow">03 — AI / IVR response</h2>
+      <div class="ivr-transcript" id="ivrTranscript">
+        <p class="ivr-placeholder">The AI's spoken response will appear here as call transcript lines once a call is answered.</p>
+      </div>
+
+      <div class="call-history">
+        <div class="history-header">
+          <h3>Recent calls</h3>
+          <button type="button" class="btn-clear" id="clearHistoryBtn">Clear</button>
+        </div>
+        <ul id="callHistory" class="history-list"></ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-note">
+    Demo mode — calls are simulated in-browser. See <code>twilio_integration/webhook.py</code> in the project files to wire this up to real phone numbers.
+  </footer>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

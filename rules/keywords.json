@@ -1,0 +1,23 @@
+{
+  "loan_scam": {
+    "keywords": ["instant loan", "loan approved", "pre-approved loan", "zero interest loan", "personal loan offer", "credit limit increase"],
+    "weight": 30
+  },
+  "lottery_scam": {
+    "keywords": ["you have won", "lottery winner", "kbc lottery", "claim your prize", "lucky draw winner", "cash prize"],
+    "weight": 35
+  },
+  "otp_bank_fraud": {
+    "keywords": ["share your otp", "verify your account", "your card is blocked", "kyc update", "account suspended", "share otp"],
+    "weight": 40
+  },
+  "tech_support_scam": {
+    "keywords": ["your computer has a virus", "microsoft support", "your device is infected", "remote access support"],
+    "weight": 30
+  },
+  "telemarketing": {
+    "keywords": ["insurance policy", "credit card offer", "best deal today", "limited time offer", "free gift voucher", "extended warranty"],
+    "weight": 20
+  },
+  "_comment": "Weights are added to the rule-based spam score when a keyword phrase is found in the call transcript (case-insensitive substring match)."
+}

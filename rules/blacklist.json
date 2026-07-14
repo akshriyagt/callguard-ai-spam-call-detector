@@ -1,0 +1,17 @@
+{
+  "blacklisted_numbers": [
+    "+911800123456",
+    "+919999000011",
+    "+918888000022",
+    "+917777000033",
+    "+916666000044"
+  ],
+  "blacklisted_prefixes": [
+    "+1900",
+    "+1809",
+    "+234",
+    "+263",
+    "+92300"
+  ],
+  "_comment": "In a real deployment, this list would be synced from a community-reported spam number database (e.g. Truecaller-style reports) via a scheduled job."
+}
