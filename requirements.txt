@@ -1,0 +1,12 @@
+flask==3.0.3
+scikit-learn==1.5.1
+pandas==2.2.2
+joblib==1.4.2
+SpeechRecognition==3.10.4
+
+# Optional — only needed if you want to upload MP3/M4A recordings
+# (WAV/FLAC work without these). Also requires ffmpeg installed system-wide.
+# pydub==0.25.1
+
+# Optional, only needed for the real-call extension in twilio_integration/
+# twilio==9.2.3
